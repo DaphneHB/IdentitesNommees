@@ -5,36 +5,41 @@ Created on Tue Jun 7 14:35:58 2016
 @author: daphnehb
 """
 
-import xlrd
-# ouverture du fichier Excel
-wb = xlrd.open_workbook('testxy.xls')
+# pour les vieilles versions (Excel avant 2010)
+from xlrd import open_workbook
+# pour versions récentes (Excel apres 2010)
+from openpyxl import Workbook, cell as Xls_cell
+import exceptions as exc
+import os, subprocess
+import string
 
-# feuilles dans le classeur
-print wb.sheet_names()
-#[u'Feuil1', u'Feuil2', u'Feuil3']
 
-# lecture des données dans la première feuille
-sh = wb.sheet_by_name(u'Feuil1')
-for rownum in range(sh.nrows):
-    print sh.row_values(rownum)
-"""
-[u'id', u'x', u'y', u'test']
-[1.0, 235.0, 424.0, u'a']
-[2.0, 245.0, 444.0, u'b']
-[3.0, 255.0, 464.0, u'c']
-[4.0, 265.0, 484.0, u'd']
-[5.0, 275.0, 504.0, u'e']
-[6.0, 285.0, 524.0, u'f']
-[7.0, 295.0, 544.0, u'g']
-"""
-# lecture par colonne
-colonne1 = sh.col_values(0)
-print colonne1
-#[u'id', 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
+def xls_to_csv(xls_filename, csv_filename=None, separateur=";") :
+    """
+    Transformation d'un fichier Excel, avec separateur comme séparation, en un fichier CSV
+    Retourne le nom du fichier CSV et son arborescence
+    """
+    # dans le cas où le fichier d'entrée est un fichier XLS (Excel avant 2010)
+    if xls_filename.lower().endswith(".xls"):
+        # ouverture du fichier Excel
+        book = open_workbook(xls_filename)
 
-colonne2=sh.col_values(1)
-print colonne2
-#[u'x', 235.0, 245.0, 255.0, 265.0, 275.0, 285.0, 295.0]
+        # lecture des données dans la première feuille
+        sh = book.sheet_by_name(u'Feuille 1')
+        for rownum in range(sh.nrows):
+            print sh.row_values(rownum)
 
-# extraction d'un élément particulier
-print colonne1[1],colonne2[1]
+        # lecture par colonne
+        colonne1 = sh.col_values(0)
+        print colonne1
+        #[u'id', 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
+
+        colonne2=sh.col_values(1)
+        print colonne2
+        #[u'x', 235.0, 245.0, 255.0, 265.0, 275.0, 285.0, 295.0]
+
+        # extraction d'un élément particulier
+        print colonne1[1],colonne2[1]
+    # dans le cas où le fichier d'entrée est un fichier XLSX (Excel après 2010)
+    elif xls_filename.lower().endswith(".xlsx"):
+        book = openpyxl.load_workbook(xls_filename)

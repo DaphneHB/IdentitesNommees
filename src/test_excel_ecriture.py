@@ -7,13 +7,13 @@ Created on Tue Jun 7 14:35:58 2016
 # pour les vieilles versions (Excel avant 2010)
 from xlwt import Workbook as Old_Workbook
 # pour versions récentes (Excel apres 2010)
-from openpyxl import Workbook
+from openpyxl import Workbook, cell as Xls_cell
 import exceptions as exc
-import os
+import os, subprocess
 import string
 
 
-def csv_to_xls_vOLD(csv_filename, xls_filename=None, separateur=",") :
+def csv_to_xls_vOLD(csv_filename, xls_filename=None, separateur=";") :
     """
     Transformation d'un fichier CSV, avec sep comme séparation, en un fichier xsl (Excel)
     Retourne le nom du fichier xls et son arborescence
@@ -32,7 +32,7 @@ def csv_to_xls_vOLD(csv_filename, xls_filename=None, separateur=",") :
         # on crée l'objet qui fera le fichier Excel
         book = Old_Workbook()
         # TODO : une feuille par facture (=> une liste de CSV en parametre)?
-        feuille = book.add_sheet('feuille 1')
+        feuille = book.add_sheet('Feuille 1')
         # ajout des en-têtes
         """feuille.write(0,0,'id')
         feuille.write(0,1,'x')
@@ -52,8 +52,9 @@ def csv_to_xls_vOLD(csv_filename, xls_filename=None, separateur=",") :
         book.save(xls_filename)
         return xls_filename
 
-def csv_to_xls(csv_filename, xls_filename=None, separateur=",") :
+def csv_to_xlsx(csv_filename, xlsx_filename=None, separateur=";") :
     """
+    Version pour
     Transformation d'un fichier CSV, avec separateur comme séparation, en un fichier xsl (Excel)
     Retourne le nom du fichier xls et son arborescence
     """
@@ -61,13 +62,13 @@ def csv_to_xls(csv_filename, xls_filename=None, separateur=",") :
     if not csv_filename.lower().endswith(".csv"):
         raise exc.NotCSVFileException(csv_filename)
 
-    if xls_filename is None:
+    if xlsx_filename is None:
         # TODO demander à l'utilisateur ce qu'il veut donner comme nom
         # on créé un nouveau nom
         pre, ext = os.path.splitext(csv_filename)
-        xls_filename = str(pre) + ".xlsx"
+        xlsx_filename = str(pre) + ".xlsx"
 
-    excel_columns = list(string.ascii_uppercase)
+    #excel_columns = list(string.ascii_uppercase)
     with open(csv_filename,"r") as csv_file:
         # on crée l'objet qui fera le fichier Excel
         book = Workbook()
@@ -81,24 +82,28 @@ def csv_to_xls(csv_filename, xls_filename=None, separateur=",") :
         feuille.write(0,3,'test')"""
 
         # pour chaque ligne du fichier d'entrée on met les valeurs dans le fichier excel
-        for num_ligne,ligne in zip(excel_columns,csv_file.readlines()):
+        for num_ligne,ligne in enumerate(csv_file.readlines(), start=1):
             # recuperation de la reference à la ligne du fichier Excel
             #ref_ligne = feuille.row(num_ligne)
             # on recupere la ligne-liste sans \n final, et séparant les cases selon le séparateur
             ligne = ligne.rstrip("\n").split(separateur)
             # remplisage de la ligne cellule par cellule
             for num_cell,cell in enumerate(ligne, start=1):
-                num_case = str(num_ligne) + str(num_cell)
+                col_lettre = Xls_cell.get_column_letter(num_cell)
+                num_case = str(col_lettre) + str(num_ligne)
                 feuille[num_case] = str(cell)
 
         #feuille.col(0).width = 10000
-        book.save(xls_filename)
-        return xls_filename
+        book.save(xlsx_filename)
+        return xlsx_filename
 
 
 ############ TESTS
-csv_to_xls("csv_sample.csv", "xls_sample.xlsx")
+csv_to_xlsx("csv_sample.csv", "xls_sample.xlsx")
 csv_to_xls_vOLD("csv_sample.csv", "xls_sample.xls")
+
+excelProcess = subprocess.Popen(["libreoffice","xls_sample.xlsx"])
+# on windows : excelProcess = popen2.Popen4("start excel %s" % (excelFile))
 """from win32com.client import Dispatch
 
 xl = Dispatch("Excel.Application")
