@@ -4,7 +4,9 @@ Created on Tue Jun 7 14:35:58 2016
 
 @author: daphnehb
 """
-#from xlwt import Workbook
+# pour les vieilles versions (Excel avant 2010)
+from xlwt import Workbook as Old_Workbook
+# pour versions récentes (Excel apres 2010)
 from openpyxl import Workbook
 import exceptions as exc
 import os
@@ -28,7 +30,7 @@ def csv_to_xls_vOLD(csv_filename, xls_filename=None, separateur=",") :
 
     with open(csv_filename,"r") as csv_file:
         # on crée l'objet qui fera le fichier Excel
-        book = Workbook()
+        book = Old_Workbook()
         # TODO : une feuille par facture (=> une liste de CSV en parametre)?
         feuille = book.add_sheet('feuille 1')
         # ajout des en-têtes
@@ -44,7 +46,6 @@ def csv_to_xls_vOLD(csv_filename, xls_filename=None, separateur=",") :
             ligne = ligne.rstrip("\n").split(separateur)
             # remplisage de la ligne cellule par cellule
             for num_cell,cell in enumerate(ligne):
-                print cell
                 ref_ligne.write(num_cell,str(cell))
 
         #feuille.col(0).width = 10000
@@ -53,7 +54,7 @@ def csv_to_xls_vOLD(csv_filename, xls_filename=None, separateur=",") :
 
 def csv_to_xls(csv_filename, xls_filename=None, separateur=",") :
     """
-    Transformation d'un fichier CSV, avec sep comme séparation, en un fichier xsl (Excel)
+    Transformation d'un fichier CSV, avec separateur comme séparation, en un fichier xsl (Excel)
     Retourne le nom du fichier xls et son arborescence
     """
     # on vérifie que fichier d'entrée est bien un fichier CSV
@@ -64,7 +65,7 @@ def csv_to_xls(csv_filename, xls_filename=None, separateur=",") :
         # TODO demander à l'utilisateur ce qu'il veut donner comme nom
         # on créé un nouveau nom
         pre, ext = os.path.splitext(csv_filename)
-        xls_filename = str(pre) + ".xls"
+        xls_filename = str(pre) + ".xlsx"
 
     excel_columns = list(string.ascii_uppercase)
     with open(csv_filename,"r") as csv_file:
@@ -96,8 +97,9 @@ def csv_to_xls(csv_filename, xls_filename=None, separateur=",") :
 
 
 ############ TESTS
-csv_to_xls("csv_sample.csv", "xls_sample.xls")
-from win32com.client import Dispatch
+csv_to_xls("csv_sample.csv", "xls_sample.xlsx")
+csv_to_xls_vOLD("csv_sample.csv", "xls_sample.xls")
+"""from win32com.client import Dispatch
 
 xl = Dispatch("Excel.Application")
 xl.Visible = True # otherwise excel is hidden
@@ -106,7 +108,7 @@ xl.Visible = True # otherwise excel is hidden
 wb = xl.Workbooks.Open(r"xls_sample.xls")
 wb.Close()
 xl.Quit()
-
+"""
 """
 # création de la feuille 1
 feuil1 = book.add_sheet('feuille 1')
