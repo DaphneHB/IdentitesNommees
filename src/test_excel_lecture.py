@@ -19,6 +19,7 @@ def xls_to_csv(xls_filename, csv_filename=None, separateur=";") :
     Transformation d'un fichier Excel, avec separateur comme séparation, en un fichier CSV
     Retourne le nom du fichier CSV et son arborescence
     """
+    csv_string = ""
     # dans le cas où le fichier d'entrée est un fichier XLS (Excel avant 2010)
     if xls_filename.lower().endswith(".xls"):
         # ouverture du fichier Excel
@@ -43,3 +44,17 @@ def xls_to_csv(xls_filename, csv_filename=None, separateur=";") :
     # dans le cas où le fichier d'entrée est un fichier XLSX (Excel après 2010)
     elif xls_filename.lower().endswith(".xlsx"):
         book = openpyxl.load_workbook(xls_filename)
+        # TODO multiple sheets ?
+        feuille = book.active
+        for ligne in range(feuille.max_row):
+            for cell in range(feuille.max_column):
+                csv_string += str(separateur)+" "
+            # on retire les deux derniers caractères (separateur et espace)
+            csv_string = csv_string[0:-2]
+            csv_string += "\n"
+    else
+        # TODO raise not an Excel file
+        pass
+        return None
+    # TODO save csv file
+    return csv_filename
