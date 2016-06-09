@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jun 7 14:35:58 2016
+Created on Tue Jun 7 14:35 2016
 
 @author: daphnehb
 """
@@ -11,12 +11,15 @@ from openpyxl import Workbook, cell as Xls_cell
 import exceptions as exc
 import os, subprocess
 import string
+from enumerations import SystemesExploit
+
 
 
 def csv_to_xls_vOLD(csv_filename, xls_filename=None, separateur=";") :
     """
     Transformation d'un fichier CSV, avec sep comme séparation, en un fichier xsl (Excel)
     Retourne le nom du fichier xls et son arborescence
+    Version spécifique à l'écriture d'un fichier Excel ancienne façon (.xls)
     """
     # on vérifie que fichier d'entrée est bien un fichier CSV
     if not csv_filename.lower().endswith(".csv"):
@@ -54,9 +57,9 @@ def csv_to_xls_vOLD(csv_filename, xls_filename=None, separateur=";") :
 
 def csv_to_xlsx(csv_filename, xlsx_filename=None, separateur=";") :
     """
-    Version pour
     Transformation d'un fichier CSV, avec separateur comme séparation, en un fichier xsl (Excel)
     Retourne le nom du fichier xls et son arborescence
+    Version spécifique à l'écriture d'un fichier Excel version après 2010 (.xlsx)
     """
     # on vérifie que fichier d'entrée est bien un fichier CSV
     if not csv_filename.lower().endswith(".csv"):
@@ -98,20 +101,33 @@ def csv_to_xlsx(csv_filename, xlsx_filename=None, separateur=";") :
         book.save(xlsx_filename)
         return xlsx_filename
 
+def ouverture_Excel(excel_filename, systeme):
+    if excel_filename is None:
+        # TODO raise no such file or directory
+        pass
+    # else
+    # si le système est Mac
+    excelProcess = subprocess.Popen(["open",excel_filename])
+    # si le système est Windows
+    # TODO test : start et excel.exe
+    excelProcess = subprocess.Popen(["libreoffice",excel_filename])
+    # si le système est Linux
+    excelProcess = subprocess.Popen(["libreoffice",excel_filename])
+    # on windows : excelProcess = popen2.Popen4("start excel %s" % (excelFile))
+    """from win32com.client import Dispatch
+
+    xl = Dispatch("Excel.Application")
+    xl.Visible = True # otherwise excel is hidden
+
+    # newest excel does not accept forward slash in path
+    wb = xl.Workbooks.Open(r"xls_sample.xls")
+    wb.Close()
+    xl.Quit()
+    """
+
 
 ############ TESTS
 csv_to_xlsx("csv_sample.csv", "xls_sample.xlsx")
 csv_to_xls_vOLD("csv_sample.csv", "xls_sample.xls")
 
-excelProcess = subprocess.Popen(["libreoffice","xls_sample.xlsx"])
-# on windows : excelProcess = popen2.Popen4("start excel %s" % (excelFile))
-"""from win32com.client import Dispatch
-
-xl = Dispatch("Excel.Application")
-xl.Visible = True # otherwise excel is hidden
-
-# newest excel does not accept forward slash in path
-wb = xl.Workbooks.Open(r"xls_sample.xls")
-wb.Close()
-xl.Quit()
-"""
+ouverture_Excel("xls_sample.xls",SystemesExploit.Linux)

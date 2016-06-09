@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jun 7 14:35:58 2016
+Created on Tue Jun 7 14:35 2016
 
 @author: daphnehb
 """
@@ -18,6 +18,7 @@ def xls_to_csv(xls_filename, csv_filename=None, separateur=";") :
     """
     Transformation d'un fichier Excel, avec separateur comme séparation, en un fichier CSV
     Retourne le nom du fichier CSV et son arborescence
+    S'adapte à la version Excel selon l'extension du fichier d'entrée
     """
     csv_string = ""
     # dans le cas où le fichier d'entrée est un fichier XLS (Excel avant 2010)
