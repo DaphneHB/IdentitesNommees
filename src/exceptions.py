@@ -11,3 +11,11 @@ class NotCSVFileException(Exception):
 
     def __str__(self):
         return repr("Le fichier {} n'est pas un fichier CSV (.csv)".format(self.value))
+
+class FileNotExistingException(Exception):
+    def __init__(self, dirname, filename):
+        self.dirname = dirname
+        self.filename = filename
+
+    def __str__(self):
+        return repr("Le fichier {} n'est pas dans {}".format(self.filename,self.dirname))

@@ -15,6 +15,8 @@ USER_CHOSEN_PATH_Unix = ABS_PATH_PRINC + "/data/"
 
 # TODO to check
 # on Windows
+"""
 INPUT_PATH_Win = ABS_PATH_PRINC + "\data\input\"
 OUTPUT_PATH_Win = ABS_PATH_PRINC + "\data\output\"
 USER_CHOSEN_PATH_Win = ABS_PATH_PRINC + "\data\"
+"""

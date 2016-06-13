@@ -53,9 +53,8 @@ def xls_to_csv(xls_filename, csv_filename=None, separateur=";") :
             # on retire les deux derniers caractères (separateur et espace)
             csv_string = csv_string[0:-2]
             csv_string += "\n"
-    else
+    else:
         # TODO raise not an Excel file
-        pass
         return None
     # TODO save csv file
     return csv_filename

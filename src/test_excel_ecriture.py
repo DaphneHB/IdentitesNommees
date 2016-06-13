@@ -12,7 +12,7 @@ import exceptions as exc
 import os, subprocess
 import string
 from enumerations import SystemesExploit
-
+import paths
 
 
 def csv_to_xls_vOLD(csv_filename, xls_filename=None, separateur=";") :
@@ -106,16 +106,19 @@ def ouverture_Excel(excel_filename, systeme):
         # TODO raise no such file or directory
         pass
     # else
-    # si le système est Mac
-    excelProcess = subprocess.Popen(["open",excel_filename])
-    # si le système est Windows
-    # TODO test : start et excel.exe
-    excelProcess = subprocess.Popen(["libreoffice",excel_filename])
-    # si le système est Linux
-    excelProcess = subprocess.Popen(["libreoffice",excel_filename])
-    # on windows : excelProcess = popen2.Popen4("start excel %s" % (excelFile))
-    """from win32com.client import Dispatch
-
+    if systeme==SystemesExploit.Macintosh:
+        # si le système est Mac
+        excelProcess = subprocess.Popen(["open",excel_filename])
+    if systeme==SystemesExploit.Windows:
+        # si le système est Windows
+        # TODO test : start et excel.exe
+        excelProcess = subprocess.Popen(["start",excel_filename])
+        # on windows : excelProcess = popen2.Popen4("start excel %s" % (excelFile))
+    if systeme==SystemesExploit.Linux:
+        # si le système est Linux
+        excelProcess = subprocess.Popen(["libreoffice",excel_filename])
+    """
+    from win32com.client import Dispatch
     xl = Dispatch("Excel.Application")
     xl.Visible = True # otherwise excel is hidden
 
@@ -127,7 +130,7 @@ def ouverture_Excel(excel_filename, systeme):
 
 
 ############ TESTS
-csv_to_xlsx("csv_sample.csv", "xls_sample.xlsx")
-csv_to_xls_vOLD("csv_sample.csv", "xls_sample.xls")
+csv_to_xlsx(paths.ABS_PATH_PRINC+"/data/csv/csv_sample.csv", paths.OUTPUT_PATH_Unix+"xls_sample.xlsx")
+csv_to_xls_vOLD(paths.ABS_PATH_PRINC+"/data/csv/csv_sample.csv", paths.OUTPUT_PATH_Unix+"xls_sample.xls")
 
-ouverture_Excel("xls_sample.xls",SystemesExploit.Linux)
+ouverture_Excel(paths.OUTPUT_PATH_Unix+"xls_sample.xls",SystemesExploit.Linux)
