@@ -1,0 +1,52 @@
+Facture n° 2016010501503
+Date : 05/01/2016
+De 
+GANDI SAS
+63-65 boulevard Massena
+F-75013 Paris
+France
+RCS Paris B. 423 093 459
+SIRET 423 093 459 00042
+APE 6311Z - SAS au capital de 300.000EUR
+N° TVA FR 81 423 093 459 
+facture@gandi.net
+
+customer JM3367-GANDI 
+Jean-marc MAUCHIEN
+56 rue amand louis
+91710 vert le petit
+France
+Email: jmmauchien@free.fr
+
+Produit hébergement
+
+description
+
+Date de l'opération
+
+owner
+
+1 pack(s) de 1 000 000 crédits IaaS
+
+Creation
+
+05/01/2016
+
+JM3367-GANDI
+
+TVA
+
+20.0
+
+Prix
+
+70,00 €
+
+Total HT
+
+70,00 €
+TVA 20.0 % 14,00 €
+84,00 €
+Total TTC
+
+

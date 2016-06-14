@@ -4,8 +4,11 @@ Created on Mon Jun 13 14:19 2016
 
 @author: daphnehb
 """
+
 import os, stat
 import exceptions as exc
+from constants import *
+
 
 def recup_basedirname_extension(path):
     """
@@ -35,11 +38,11 @@ def verify_path(path, last_dir=False, file_too = False):
         basen = ""
     # on crée les dossiers s'ils n'existent pas
     if not os.path.exists(dirn):
-        try:
-            original_umask = os.umask(0)
-            os.makedirs(dirn,0777)
-        finally:
-            os.umask(original_umask)
+        #try:
+        #    original_umask = os.umask(0)
+        os.makedirs(dirn,0777)
+        #finally:
+        #    os.umask(original_umask)
     if file_too:
         # vérification de l'existence du fichier
         if basen!="" and (not os.path.exists(path) or not os.path.isfile(path)):
@@ -52,6 +55,7 @@ def recup_destination(dest_path,extension):
     Renvoie le chemin absolu de la destination selon le chemin demandé et avec comme dossier final un dossier de l'extension
     Crée aussi le dossier <dest_path>/<extension> s'il n'existe pas
     """
+    extension = extension+str("/")
     dest_path = os.path.join(dest_path,extension)
     # on vérifie que le chemin demandé pour le fichier de sortie existe, si non on le crée
     verify_path(dest_path,last_dir=True)
