@@ -6,7 +6,7 @@ Created on Tue Jun 7 13:55 2016
 """
 from enum import Enum
 
-class SystemesExploit(Enum):
+class SystemesExploit (Enum) :
     """
     Enumération représentant le système d'exploitation de l'utilisateur
     """
@@ -18,3 +18,20 @@ class SystemesExploit(Enum):
         return "Système {}".format(self)
 
 # print SystemesExploit.Linux
+
+class TYPE_REGEXP (Enum) :
+	"""
+	Enumération représentant le type de mot reconnu par la regexp
+	"""
+	DATE, \
+	LIEU, \
+	ADRESSE, \
+	MONTANT, \
+	NOM, \
+	TYPE_SOCIETE, \
+	DESCRIPTION, \
+	TAUX, \
+	TEL, \
+	FAX, \
+	RCS, \
+	AUTRE = range(12)

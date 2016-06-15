@@ -11,24 +11,32 @@ import re
 class Reg_Finder :
     """
     Représente l'analyseur de string à l'aide de regexp
+    Utilisant re.search(reg,str,re.I).group() pour récupérer la plus grosse parcelle
+    Puis en décodant la sting string..decode("utf-8", "ignore")
     """
     # Regexp static pour différencier simplement les champs
     # pour un numero de téléphone ou de fax
-	reg_tel_fax = ''
+    # accepte les séparateurs . espace et - et les XXXX XX XX XX, XXXX XXX XXX, XX XX XX XX XX etc
+	reg_tel_fax = '(0[0-9]{1,3}([ \.-]?[0-9]{2,3}){2,4})'
     # pour un numero rcs (siren)
-	reg_rcs = ''
-    # pour un taux
-	reg_taux = ''
-    # pour un montant
-	reg_montant = ''
+	reg_rcs = '(RCS ?( .*)?\d{3} ?\d{3} ?\d{3})|(\d{3} ?\d{3} ?\d{3}( .* )? ?RCS)'
+    # pour un taux TVA avec le symbole %
+	reg_taux = 'TVA [^\d]*(\d{2}([,\.]\d*)?[ ]?%)'
+    # pour un montant sans symbole
+	reg_montant = '((\d| \d)+([,\.](\d| \d)+)?)'
     # pour une adresse
-	reg_adress = ''
+    # ne récupère pas les adresse du style F-75009
+	reg_adress = '(\d*( ?\w+ ?)+[ \n]*\d{5} [^\n]{2,})'
+	# pour le numero , nom et type de rue
+	reg_rue = '(\d*( ?\w+ ?)+)\s'
+	# pour le code postal (5 chiffres)
+	reg_cp = '(\d{5} [^\n]{2,})'
     # pour un nom
 	reg_nom = ''
     # pour le type d'une entreprise/société
 	reg_type_soc = ''
     # pour une date
-	reg_date = ''
+	reg_date = '(\d{2}[/\. -](\d{2}|\w+)[ /\.-]\d{2,4})'
     # pour une description/ un titre
 	reg_descr = ''
     

@@ -55,6 +55,11 @@ def convert(fname, dest_path, type_out="txt",stdout=False, pages=None) :
     Lit aussi le texte vertical
     ! Lecture de la facture uniquement possible pour du txt
     """
+    # on met tout en minuscule (sauf le nom de fichier)
+    dest_path = dest_path.lower()
+    type_out = type_out.lower()
+    #fname = fname.lower()
+    
     # on vérifie que le fichier pdf d'entrée existe bien
     tools.verify_path(fname,file_too=True)
     if not pages :
@@ -114,3 +119,20 @@ def convert(fname, dest_path, type_out="txt",stdout=False, pages=None) :
     output.close
     return 1
 
+def generatorPDFtoTxt (fichier_pdf, dossier_dest, VERSION="html") :
+    # on génère la version demandée
+    import threads as th
+    import pdf_ocr
+
+    generateur = th.Sous_Traitance(pdf_ocr.convert,[fichier_pdf, dossier_dest, VERSION], start_time=0, fichier_import='pdf_ocr')
+
+
+    if VERSION!="html":
+
+        # on génère aussi tout de même la version html
+        pdf_ocr.convert(fichier_pdf, dossier_dest, "html", stdout=True)
+        
+    # on attend le thread
+    generateur.join()
+
+    #print pdf_ocr.get_pdf_content(PDF_FILE)
