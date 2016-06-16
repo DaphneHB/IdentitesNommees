@@ -12,140 +12,240 @@ class Reg_Finder :
     """
     Représente l'analyseur de string à l'aide de regexp
     Utilisant re.search(reg,str,re.I).group() pour récupérer la plus grosse parcelle
-    Puis en décodant la sting string..decode("utf-8", "ignore")
     """
+    # Caractère représentant un saut de ligne selon la configuration fichier choisie
+    caract_saut = r'<br>'
     # Regexp static pour différencier simplement les champs
     # pour un numero de téléphone ou de fax
     # accepte les séparateurs . espace et - et les XXXX XX XX XX, XXXX XXX XXX, XX XX XX XX XX etc
-	reg_tel_fax = '(0[0-9]{1,3}([ \.-]?[0-9]{2,3}){2,4})'
+    reg_tel_fax = r'(0[0-9]{1,3}([ \.-]?[0-9]{2,3}){2,4})'
     # pour un numero rcs (siren)
-	reg_rcs = '(RCS ?( .*)?\d{3} ?\d{3} ?\d{3})|(\d{3} ?\d{3} ?\d{3}( .* )? ?RCS)'
+    reg_rcs = r'(RCS ?( .*)?\d{3} ?\d{3} ?\d{3})|(\d{3} ?\d{3} ?\d{3}( .* )? ?RCS)'
     # pour un taux TVA avec le symbole %
-	reg_taux = 'TVA [^\d]*(\d{2}([,\.]\d*)?[ ]?%)'
+    reg_tauxTVA = r'(TVA [^\d]*(\d{2}([,\.]\d*)?[ ]?%))'
+    # pour n'importe quel taux
+    reg_taux = r'([^\d]*(\d{2}([,\.]\d*)?[ ]?%)'
     # pour un montant sans symbole
-	reg_montant = '((\d| \d)+([,\.](\d| \d)+)?)'
+    reg_montant = r'(\d+([,\. -]?\d+)*( \w+)?)'
     # pour une adresse
     # ne récupère pas les adresse du style F-75009
-	reg_adress = '(\d*( ?\w+ ?)+[ \n]*\d{5} [^\n]{2,})'
-	# pour le numero , nom et type de rue
-	reg_rue = '(\d*( ?\w+ ?)+)\s'
-	# pour le code postal (5 chiffres)
-	reg_cp = '(\d{5} [^\n]{2,})'
-    # pour un nom
-	reg_nom = ''
+    reg_adress = r'(\d{,4} ?(\w+\'?-? ?)+[ %s]?\d{5} [a-zA-Z -]{2,})' % (caract_saut, )
+    # pour le numero , nom et type de rue
+    reg_rue = r'(\d{,4}( ?\w+-? ?)+)'
+    # pour le code postal (5 chiffres)
+    reg_cp = r'(\d{5} [a-zA-Z -]{2,})'
     # pour le type d'une entreprise/société
-	reg_type_soc = ''
+    reg_type_soc = r'(\w* \w*[A-Z]\w+ .* capital \w+[ -]? \d+([,\. -]?\d+)*( \w+)?)'
     # pour une date
-	reg_date = '(\d{2}[/\. -](\d{2}|\w+)[ /\.-]\d{2,4})'
-    # pour une description/ un titre
-	reg_descr = ''
-    
+    reg_date = r'(\d{1,2}[/\. -](\d{1,2}|[A-Za-z]+)[ /\.-]\d{4})'
+    # pour une description/un titre/un nom
+    reg_descr = r'^.*'
+    # représente un numero identifiant récupéré sur la facture
+    reg_num = r'([Nn] ?[u°]\w* ?[ \.-]?(\d[ \.-]?)+[ \B])'
+    # le numéro de tva de l'entreprise
+    reg_numTva = r'((TVA )?[Nn] ?[u°]\w* .* FR[ \.-]?(\d[ \.-]?){11})'
 
-    def __init__ (self, file) :
-    	pass
 
+    def __init__ (self, type_extension, filename=None) :
+    	if type_extension == "html" :
+    		self.caract_saut = "<br>"
+    	elif type_extension == "xml" :
+    		self.caract_saut = "\n"
+    	elif type_extension == "txt" or type_extension == "text" :
+    		self.caract_saut = "\n"
+    	else :
+    		self.caract_saut = "\n"
+    	self.filename = filename
+    	
     def isName (self, name) :
     	"""
-    	Vérifie si ce champ peut être le nom
-    	si oui,  actualise le nom
+    	Vérifie et retourne si ce champ peut être ou contenir le nom
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
     	"""
-    	pass
+     recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
+     if recherche is None :
+    		return False
+    	else :
+    		return recherche.group()
     
     def isTypeInc (self, type_entreprise) :
     	"""
-    	Vérifie si ce champ peut être le type de l'entreprise
-    	si oui,  actualise le type
+    	Vérifie et retourne si ce champ peut être ou contenir le type de l'entreprise
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
     	"""
-    	pass
+     recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
+     if recherche is None :
+    		return False
+    	else :
+    		return recherche.group()
     
+     
     def isRCS (self, rcs) :
     	"""
-    	Vérifie si ce champ peut être le numéro RCS
-    	si oui,  actualise le champ
+    	Vérifie et retourne si ce champ peut être ou contenir le numéro RCS
+    	si oui, renvoie la partie de la string correspondant
+    	si non, retourne False
     	"""
-    	pass
+    	recherche = re.search(Reg_Finder.reg_rcs,rcs)
+    	if recherche is None :
+    		return False
+    	else :
+    		return recherche.group()
     
     def isAddress (self, adresse) :
     	"""
-    	Vérifie si ce champ peut être l'adresse
-    	si oui,  actualise le champ
+    	Vérifie et retourne si ce champ peut être ou contenir l'adresse
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
     	"""
-    	pass
+     recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
+     if recherche is None :
+    		return False
+    	else :
+    		return recherche.group()
     
     def isTelFax (self, tel_fax, isTel=True) :
     	"""
-    	Vérifie si ce champ peut être le tel ou le fax
+    	Vérifie et retourne si ce champ peut être ou contenir le tel ou le fax
     	isTel is True si la probabilité qu'il s'agisse du tel est plus grande que la probabilité qu'il s'agisse du fax
-    	si oui,  actualise le champ
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
     	"""
-    	pass
+     type_entreprise = type_entreprise.decode("utf-8","ignore")
+     recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
+     if recherche is None :
+    		return False
+    	else :
+    		return recherche.group()
     
     def isTVA (self, tva) :
     	"""
-    	Vérifie si ce champ peut être le numéro tva
-    	si oui,  actualise le champ
+    	Vérifie et retourne si ce champ peut être ou contenir le numéro tva
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
     	"""
-    	pass
+     type_entreprise = type_entreprise.decode("utf-8","ignore")
+     recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
+     if recherche is None :
+    		return False
+    	else :
+    		return recherche.group()
 
     def isTitre (self, titre) :
     	"""
-    	Vérifie si ce champ peut être le titre de la facture
-    	si oui,  actualise le champ
+    	Vérifie et retourne si ce champ peut être ou contenir le titre de la facture
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
     	"""
-    	pass
+     type_entreprise = type_entreprise.decode("utf-8","ignore")
+     recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
+     if recherche is None :
+    		return False
+    	else :
+    		return recherche.group()
     
     def isNumFacture (self, numero) :
     	"""
-    	Vérifie si ce champ peut être le numero de la facture
-    	si oui,  actualise le champ
+    	Vérifie et retourne si ce champ peut être ou contenir le numero de la facture
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
     	"""
-    	pass
+     type_entreprise = type_entreprise.decode("utf-8","ignore")
+     recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
+     if recherche is None :
+    		return False
+    	else :
+    		return recherche.group()
     
     def isDate (self, date) :
     	"""
-    	Vérifie si ce champ peut être la date de la facture
-    	si oui,  actualise le nom
+    	Vérifie et retourne si ce champ peut être ou contenir la date de la facture
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
     	"""
-    	pass
+     type_entreprise = type_entreprise.decode("utf-8","ignore")
+     recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
+     if recherche is None :
+    		return False
+    	else :
+    		return recherche.group()
     
     def arePrestations (self, prests) :
     	"""
-    	Vérifie si ce champ peut être les descriptions des prestations contenues dans la facture
-    	si oui,  actualise le champ
+    	Vérifie et retourne si ce champ peut être ou contenir les descriptions des prestations contenues dans la facture
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
+     prests est une simple string, renvoie une liste de 'prestations extraites'
     	"""
-    	pass
+     type_entreprise = type_entreprise.decode("utf-8","ignore")
+     recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
+     if recherche is None :
+    		return False
+    	else :
+    		return recherche.group()
+
     def isTVA (self, tva) :
     	"""
-    	Vérifie si ce champ peut être le montant de la tva
-    	si oui,  actualise le champ
+    	Vérifie et retourne si ce champ peut être ou contenir le montant de la tva
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
     	"""
-    	pass
+     type_entreprise = type_entreprise.decode("utf-8","ignore")
+     recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
+     if recherche is None :
+    		return False
+    	else :
+    		return recherche.group()
     
     def isTauxTVA (self, tauxTva) :
     	"""
-    	Vérifie si ce champ peut être le taux tva
-    	si oui,  actualise le champ
+    	Vérifie et retourne si ce champ peut être ou contenir le taux tva
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
     	"""
-    	pass
+     type_entreprise = type_entreprise.decode("utf-8","ignore")
+     recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
+     if recherche is None :
+    		return False
+    	else :
+    		return recherche.group()
+    
+    def isMontant (self, montant) :
+    	"""
+    	Vérifie et retourne si ce champ peut être ou contenir le montant HT
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
+    	"""
+     type_entreprise = type_entreprise.decode("utf-8","ignore")
+     recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
+     if recherche is None :
+    		return False
+    	else :
+    		return recherche.group()
     
     def isHT (self, ht) :
     	"""
-    	Vérifie si ce champ peut être le montant HT
-    	si oui,  actualise le champ
+    	Vérifie et retourne si ce champ peut être ou contenir le montant HT
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
     	"""
-    	pass
-    
+     pass
+ 
     def isTTC (self, ttc) :
     	"""
-    	Vérifie si ce champ peut être le montant TTC
-    	si oui,  actualise le champ
+    	Vérifie et retourne si ce champ peut être ou contenir le montant TTC
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
     	"""
     	pass
     
     def isOthersTax (self, autres) :
     	"""
-    	Vérifie si ce champ peut être d'autres taxes sur le total de la facture
-    	si oui,  actualise le champ
+    	Vérifie et retourne si ce champ peut être ou contenir d'autres taxes sur le total de la facture
+    	si oui, renvoie la partie de la string correspondant
+	si non, retourne False
     	"""
     	pass
 
