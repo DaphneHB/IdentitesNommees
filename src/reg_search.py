@@ -113,7 +113,6 @@ class Reg_Finder :
     	si oui, renvoie la partie de la string correspondant
 	si non, retourne False
     	"""
-     type_entreprise = type_entreprise.decode("utf-8","ignore")
      recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
      if recherche is None :
     		return False
@@ -126,7 +125,6 @@ class Reg_Finder :
     	si oui, renvoie la partie de la string correspondant
 	si non, retourne False
     	"""
-     type_entreprise = type_entreprise.decode("utf-8","ignore")
      recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
      if recherche is None :
     		return False
@@ -139,7 +137,6 @@ class Reg_Finder :
     	si oui, renvoie la partie de la string correspondant
 	si non, retourne False
     	"""
-     type_entreprise = type_entreprise.decode("utf-8","ignore")
      recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
      if recherche is None :
     		return False
@@ -152,7 +149,6 @@ class Reg_Finder :
     	si oui, renvoie la partie de la string correspondant
 	si non, retourne False
     	"""
-     type_entreprise = type_entreprise.decode("utf-8","ignore")
      recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
      if recherche is None :
     		return False
@@ -165,7 +161,6 @@ class Reg_Finder :
     	si oui, renvoie la partie de la string correspondant
 	si non, retourne False
     	"""
-     type_entreprise = type_entreprise.decode("utf-8","ignore")
      recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
      if recherche is None :
     		return False
@@ -179,7 +174,6 @@ class Reg_Finder :
 	si non, retourne False
      prests est une simple string, renvoie une liste de 'prestations extraites'
     	"""
-     type_entreprise = type_entreprise.decode("utf-8","ignore")
      recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
      if recherche is None :
     		return False
@@ -192,7 +186,6 @@ class Reg_Finder :
     	si oui, renvoie la partie de la string correspondant
 	si non, retourne False
     	"""
-     type_entreprise = type_entreprise.decode("utf-8","ignore")
      recherche = re.search(Reg_Finder.reg_type_soc,type_entreprise)
      if recherche is None :
     		return False
