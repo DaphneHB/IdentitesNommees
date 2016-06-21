@@ -245,7 +245,7 @@ class Destinataire :
     	# le numéro de téléphone du destinataire  (et son fax?)  (string)
     	self.tel_fax = None # implied
     	# le numéro TVA du destinataire - FRXX<RCS> (XXXXX)?  (string)
-    	self.num_TVA = None # required
+    	self.num_TVA = None # implied
 
     def isName (self, name) :
     	"""

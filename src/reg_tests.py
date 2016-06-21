@@ -13,7 +13,7 @@ montant = "3 8000 000 000 €"
 
 import re
 caract_saut = '<br>'
-bloc_text = "Free SAS au capital de 3.441.812 Euros − B 421 938 861 RCS Paris − Siège social: 8 rue de la Ville l’Evêque 75008 Paris − N° de TVA intra communautaire: FR 604 219 388 61".decode('utf-8',"ignore")
+bloc_text = "Free SAS au capital de 3.441.812 Euros − B 421 938 861 Paris RCS − Siège social: 8 rue de la Ville l’Evêque 75008 Paris − N° de TVA intra communautaire: FR 604 219 388 61".decode('utf-8',"ignore")
 
 
 reg_rcs = '([0-9]{3}){3}'

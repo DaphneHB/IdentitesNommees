@@ -48,12 +48,12 @@ from pdfminer.converter import XMLConverter, HTMLConverter, TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
-def convert(fname, dest_path, type_out="txt",stdout=False, pages=None) :
+def convert(fname, dest_path, type_out="html",stdout=False, pages=None) :
     """
     Enregistre le contenu txt du PDF en un fichier de type outtype dans data/<outtype>
     Types acceptés "txt", "html", "xml"
     Lit aussi le texte vertical
-    ! Lecture de la facture uniquement possible pour du txt
+    ! Lecture de la facture uniquement possible pour du html
     """
     # on met tout en minuscule (sauf le nom de fichier)
     dest_path = dest_path.lower()

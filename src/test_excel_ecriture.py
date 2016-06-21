@@ -15,7 +15,7 @@ from enumerations import SystemesExploit
 import paths
 
 
-def csv_to_xls_vOLD(csv_filename, xls_filename=None, separateur=";") :
+def csv_to_xls_bef2010(csv_filename, xls_filename=None, separateur=";") :
     """
     Transformation d'un fichier CSV, avec sep comme séparation, en un fichier xsl (Excel)
     Retourne le nom du fichier xls et son arborescence
@@ -131,6 +131,6 @@ def ouverture_Excel(excel_filename, systeme):
 
 ############ TESTS
 csv_to_xlsx(paths.ABS_PATH_PRINC+"/data/csv/csv_sample.csv", paths.OUTPUT_PATH_Unix+"xls_sample.xlsx")
-csv_to_xls_vOLD(paths.ABS_PATH_PRINC+"/data/csv/csv_sample.csv", paths.OUTPUT_PATH_Unix+"xls_sample.xls")
+csv_to_xls_bef2010(paths.ABS_PATH_PRINC+"/data/csv/csv_sample.csv", paths.OUTPUT_PATH_Unix+"xls_sample.xls")
 
 ouverture_Excel(paths.OUTPUT_PATH_Unix+"xls_sample.xls",SystemesExploit.Linux)

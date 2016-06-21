@@ -12,8 +12,10 @@ from constants import *
 
 def recup_basedirname_extension(path):
     """
-    Retourne un tuple (triplet) : (basename, dirname, ectension) de l'arborescence de fichier entrée
-    avec le dirname sans extension
+    Retourne un tuple (triplet) : (basename, dirname, extension) de l'arborescence de fichier entrée
+    avec le basename sans extension
+    basename=nomFicher
+	dirname=chemin
     """
     path = os.path.realpath(path)
     path,extension = os.path.splitext(path)
