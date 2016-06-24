@@ -39,7 +39,7 @@ def rotation_pdf(filename,outfile=None):
 # Affichage du fichier IMNAME
 with open(IMNAME) as monfichier:
     for i in range(10):
-        print monfichier.readline()
+        pass #print monfichier.readline()
         
 # "Faux" PDF -> PNG
 def pdf_to_png(pdffile) :
@@ -109,5 +109,5 @@ def gs_pdf_to_png(pdffilepath, resolution):
 
 # PNG -> "Bon" PDF
 from PIL import Image
-im = Image.open(IMNAME)
-im.save("testeur.pdf","PDF")
+import pytesseract 
+print pytesseract.image_to_string(Image.open(IMNAME))
