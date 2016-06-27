@@ -13,7 +13,7 @@ montant = "3 8000 000 000 €"
 
 import re
 caract_saut = '<br>'
-bloc_text = "Free SAS au capital de 3.441.812 Euros − B 421 938 861 Paris RCS − Siège social: 8 rue de la Ville l’Evêque 75008 Paris − N° de TVA intra communautaire: FR 604 219 388 61".decode('utf-8',"ignore")
+bloc_text = "Free SAS au capital de 3.441.812 Euros − B 421 938 861 Paris RCS − Siège social: 8 rue de la Ville l’Evêque 75008 Paris − N° de TVA intra communautaire: FR 604 219 388 61".decode('ascii',"ignore")
 
 
 reg_rcs = '([0-9]{3}){3}'
@@ -40,7 +40,7 @@ print ret_to_fall
 print ret_to.group()
 
 print "\nNumTVA\n"
-reg_numTva = '((TVA )?[Nn] ?[u°]\w* .* FR[ \.-]?(\d[ \.-]?){11})'
+reg_numTva = '(FR[ \.-]?(\d[ \.-]?){11})' # ((TVA )?[Nn] ?[u°]\w* .*
 str_numTva = bloc_text
 ret_numTva_fall = re.findall(reg_numTva,str_numTva)
 ret_numTva = re.search(reg_numTva,str_numTva,re.I)
@@ -49,7 +49,7 @@ print ret_numTva_fall
 print ret_numTva.group()
 
 print "\nNum\n"
-reg_numFact = '([Nn] ?[u°]\w* ?[ \.-]?(\d[ \.-]?)+[ \B])'
+reg_numFact = '((\d[ \.-]?)+[ \B])' # '[Nn] ?[u°]\w* ?[ \.-]?'
 str_numFact = 'Facture n°599831845 du 02 Janvier 2016'.decode('utf-8','ignore')
 ret_numFact_fall = re.findall(reg_numFact,str_numFact)
 ret_numFact = re.search(reg_numFact,str_numFact,re.I)
@@ -79,10 +79,10 @@ print ret_montant.group()
 print "\nAdresse\n"
 reg_rue = '(\d{,4}( ?\w+-? ?)+)'
 reg_cp = '(\d{5} [a-zA-Z -]{2,})'
-reg_adresse = '(\d{,4} ?(\w+\'?-? ?)+[ %s]?\d{5} [a-zA-Z -]{2,})' % (caract_saut, )
-str_adresse = bloc_text
-ret_adresse_fall = re.findall(reg_rue,str_adresse,re.I)
-ret_adresse = re.search(reg_rue,str_adresse,re.I)
+reg_adresse = '(\d{,4} ?[\w+\' -]+[, %s]*\d{5} [a-zA-Z -]{2,})' % (caract_saut, )
+str_adresse = bloc_text #"302 rue de travise 79556 Oliuf sur try"
+ret_adresse_fall = re.findall(reg_adresse,str_adresse,re.I)
+ret_adresse = re.search(reg_adresse,str_adresse,re.I)
 print ret_adresse
 print ret_adresse_fall
 print ret_adresse.group()
@@ -109,11 +109,12 @@ print ret_societe.group()
 
 print "************************************"
 """
-Toujours décoder le format de la string en entré en décodant la sting string.decode("utf-8", "ignore") ( avant chaque test)
+Toujours décoder le format de la string en entré en décodant la sting string.decode("ascii", "ignore") ( avant chaque test)
 Attention decodage une fois seulement sinon UnicodeError
 """
-import reg_search as rx
+"""import reg_search as rx
 
 rClass = rx.Reg_Finder("html")
 
 print rClass.isRCS(bloc_text)
+"""
