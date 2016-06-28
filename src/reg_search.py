@@ -13,8 +13,12 @@ class Regex_Tools:
     Représente l'analyseur de string à l'aide de regexp
     Utilisant re.search(reg,str,re.I).group() pour récupérer la plus grosse parcelle
     """
+
+    def __init__(self):
+        pass
+
     # Caractère représentant un saut de ligne selon la configuration fichier choisie
-    caract_saut = r'<br>'
+    caract_saut = r'\n'
     # Regexp static pour différencier simplement les champs
     # pour un numero de téléphone ou de fax
     # accepte les séparateurs . espace et - et les XXXX XX XX XX, XXXX XXX XXX, XX XX XX XX XX etc
@@ -39,36 +43,69 @@ class Regex_Tools:
     # pour une date
     reg_date = r'(\d{1,2}[/\. -](\d{1,2}|[A-Za-z]+)[ /\.-]\d{4})'
     # pour une description/un titre/un nom
-    reg_descr = r'^.*'
+    reg_descr = r'^[A-Z].*'
     # représente un numero identifiant récupéré sur la facture
     reg_num = r'([Nn] ?[u°]\w* ?[ \.-]?(\d[ \.-]?)+[ \B])'
     # le numéro de tva de l'entreprise
     reg_numTva = r'(FR[ \.-]?(\d[ \.-]?){11})'  # en début : (TVA )?[Nn] ?[u°]\w* .*
 
-    def __init__(self, type_extension, filename=None):
-        if type_extension == "html":
-            caract_saut = "<br>"
-        elif type_extension == "xml":
-            caract_saut = "\n"
-        elif type_extension == "txt" or type_extension == "text":
-            caract_saut = "\n"
+    # liste de toutes les regexp à appliquer
+    # détermine l'ordre des flags dans le vecteur des features
+    reg_flags = {reg_tel_fax, reg_rcs,
+                 reg_tauxTVA, reg_taux,
+                 reg_montant, reg_adress,
+                 reg_type_soc, reg_date,
+                 reg_descr, reg_num,
+                 reg_numTva}
+
+    def recup_flag_test(self, flag, bloc_text):
+        reg_flag_test = {Regex_Tools.reg_tel_fax: self.isTelFax,
+                         Regex_Tools.reg_rcs: self.isRCS,
+                         Regex_Tools.reg_tauxTVA: self.isTauxTVA,
+                         Regex_Tools.reg_taux: self.isTaux,
+                         Regex_Tools.reg_montant: self.isMontant,
+                         Regex_Tools.reg_adress: self.isAddress,
+                         Regex_Tools.reg_type_soc: self.isTypeInc,
+                         Regex_Tools.reg_descr: self.isDescription,
+                         Regex_Tools.reg_num: self.isNumFacture,
+                         Regex_Tools.reg_numTva: self.isNumTVA,
+                         Regex_Tools.reg_date: self.isDate}
+        if not reg_flag_test.has_key(flag):
+            return None
         else:
-            caract_saut = "\n"
-        self.filename = filename
+            return reg_flag_test[flag](bloc_text)
+
+    def apply_flags(self, bloc_text):
+        """
+        Pour chaque flag de regex possible dans la liste reg_flags,
+        Test sur le bloc de text et récupération des flags actifs et inactifs en un tuple
+        :param bloc_text: bloc de texte extrait du html sur lequel appliquer les regex
+        :return: tuple (_,_,_,_) présentant pour chaque flag 0 ou 1 le résultat de la regexp correspondante
+        """
+        resultat_flags = []
+        # pour chaque flag envisageable
+        for flag in Regex_Tools.reg_flags:
+            # on l'applique au bloc de texte
+            res, _ = self.recup_flag_test(flag,bloc_text)
+            # s'il y a eu un soucis avec les flags
+            if res is None:
+                continue
+            # on enregistre le résultat dans resultat_flags
+            resultat_flags.append(res)
+        return tuple(resultat_flags)
 
     def isDescription(self, descrp):
         """
         Vérifie et retourne si ce champ peut être ou contenir le nom, une description ou un titre
-        si oui, renvoie 1 # la partie de la string correspondant
-        si non, retourne 0
+        si oui, renvoie 1 et la partie de la string correspondant
+        si non, retourne 0 et None
         """
 
-        recherche = re.search(Reg_Finder.reg_descr, descrp)
+        recherche = re.search(Regex_Tools.reg_descr, descrp)
         if recherche is None:
-            return 0
+            return 0, None
         else:
-            return 1  # recherche.group()
-
+            return 1, recherche.group()
 
     def isTypeInc(self, type_entreprise):
         """
@@ -76,12 +113,11 @@ class Regex_Tools:
         si oui, renvoie 1
         si non, retourne 0
         """
-        recherche = re.search(Reg_Finder.reg_type_soc, type_entreprise)
+        recherche = re.search(Regex_Tools.reg_type_soc, type_entreprise)
         if recherche is None:
-            return 0
+            return 0, None
         else:
-            return 1
-
+            return 1, recherche.group()
 
     def isRCS(self, rcs):
         """
@@ -89,12 +125,11 @@ class Regex_Tools:
         si oui, renvoie 1
         si non, retourne 0
         """
-        recherche = re.search(Reg_Finder.reg_rcs, rcs)
+        recherche = re.search(Regex_Tools.reg_rcs, rcs)
         if recherche is None:
-            return 0
+            return 0, None
         else:
-            return 1
-
+            return 1, recherche.group()
 
     def isAddress(self, adresse):
         """
@@ -102,12 +137,11 @@ class Regex_Tools:
         si oui, renvoie 1
         si non, retourne 0
         """
-        recherche = re.search(Reg_Finder.reg_adress,adresse)
+        recherche = re.search(Regex_Tools.reg_adress, adresse)
         if recherche is None:
-            return 0
+            return 0, None
         else:
-            return 1
-
+            return 1, recherche.group()
 
     def isTelFax(self, tel_fax, isTel=True):
         """
@@ -116,12 +150,11 @@ class Regex_Tools:
         si oui, renvoie 1
         si non, retourne 0
         """
-        recherche = re.search(Reg_Finder.reg_tel_fax, tel_fax)
+        recherche = re.search(Regex_Tools.reg_tel_fax, tel_fax)
         if recherche is None:
-            return 0
+            return 0, None
         else:
-            return 1
-
+            return 1, recherche.group()
 
     def isNumTVA(self, tva):
         """
@@ -129,12 +162,11 @@ class Regex_Tools:
         si oui, renvoie 1
         si non, retourne 0
         """
-        recherche = re.search(Reg_Finder.reg_numTva, tva)
+        recherche = re.search(Regex_Tools.reg_numTva, tva)
         if recherche is None:
-            return 0
+            return 0, None
         else:
-            return 1
-
+            return 1, recherche.group()
 
     def isNumFacture(self, numero):
         """
@@ -143,12 +175,11 @@ class Regex_Tools:
         si oui, renvoie 1
         si non, retourne 0
         """
-        recherche = re.search(Reg_Finder.reg_num, numero)
+        recherche = re.search(Regex_Tools.reg_num, numero)
         if recherche is None:
-            return 0
+            return 0, None
         else:
-            return 1
-
+            return 1, recherche.group()
 
     def isDate(self, date):
         """
@@ -156,12 +187,11 @@ class Regex_Tools:
         si oui, renvoie 1
         si non, retourne 0
         """
-        recherche = re.search(Reg_Finder.reg_date, date)
+        recherche = re.search(Regex_Tools.reg_date, date)
         if recherche is None:
-            return 0
+            return 0, None
         else:
-            return 1
-
+            return 1, recherche.group()
 
     def isTauxTVA(self, tauxTva):
         """
@@ -169,12 +199,11 @@ class Regex_Tools:
         si oui, renvoie 1
         si non, retourne 0
         """
-        recherche = re.search(Reg_Finder.reg_tauxTVA, tauxTva)
+        recherche = re.search(Regex_Tools.reg_tauxTVA, tauxTva)
         if recherche is None:
-        return 0
+            return 0, None
         else:
-            return 1
-
+            return 1, recherche.group()
 
     def isTaux(self, taux):
         """
@@ -182,12 +211,11 @@ class Regex_Tools:
         si oui, renvoie 1
         si non, retourne 0
         """
-        recherche = re.search(Reg_Finder.reg_taux, taux)
+        recherche = re.search(Regex_Tools.reg_taux, taux)
         if recherche is None:
-            return 0
+            return 0, None
         else:
-            return 1
-
+            return 1, recherche.group()
 
     def isMontant(self, montant):
         """
@@ -195,8 +223,8 @@ class Regex_Tools:
         si oui, renvoie 1
         si non, retourne 0
         """
-        recherche = re.search(Reg_Finder.reg_montant, montant)
+        recherche = re.search(Regex_Tools.reg_montant, montant)
         if recherche is None:
-            return 0
+            return 0, None
         else:
-            return 1
+            return 1, recherche.group()

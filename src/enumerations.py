@@ -6,7 +6,8 @@ Created on Tue Jun 7 13:55 2016
 """
 from enum import Enum
 
-class SystemesExploit (Enum) :
+
+class SystemesExploit ( Enum ):
     """
     Enumération représentant le système d'exploitation de l'utilisateur
     """
@@ -14,24 +15,38 @@ class SystemesExploit (Enum) :
     Windows = "Windows"
     Linux = "Linux"
 
-    def __str__(self):
-        return "Système {}".format(self)
+    def __str__ ( self ):
+        return "Système {}".format ( self )
+
 
 # print SystemesExploit.Linux
 
-class TYPE_REGEXP (Enum) :
-	"""
-	Enumération représentant le type de mot reconnu par la regexp
-	"""
-	DATE, \
-	LIEU, \
-	ADRESSE, \
-	MONTANT, \
-	NOM, \
-	TYPE_SOCIETE, \
-	DESCRIPTION, \
-	TAUX, \
-	TEL, \
-	FAX, \
-	RCS, \
-	AUTRE = range(12)
+class TYPE_REGEXP (  Enum ):
+    """
+    Enumération représentant le type de mot reconnu par la regexp
+    Intra-bloc
+    """
+    DATE, \
+    LIEU, \
+    ADRESSE, \
+    MONTANT, \
+    NOM, \
+    TYPE_SOCIETE, \
+    DESCRIPTION, \
+    TAUX, \
+    TEL, \
+    FAX, \
+    RCS, \
+    AUTRE = range ( 12 )
+
+
+class TYPE_REGEXP ( Enum ):
+    """
+    Enumération représentant le type de mot reconnu par l'algorithme de Machine Learning
+    Pour différencier les blocs
+    """
+    DESTINATAIRE, \
+    EXPEDITEUR, \
+    INFOFACTURE, \
+    INFOPRESTATIONS, \
+    AUTRE = range ( 5 )

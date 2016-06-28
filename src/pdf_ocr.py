@@ -15,8 +15,9 @@ text = process('/tmp/mydocument.pdf')
 # ! UTF-8 non capturé, accents illlisibles + marquage des sauts de lignes et caractères spcéciaux avec \
 """
 
+
 # VERSION 2
-def get_pdf_content(pdf_path, page_nums=[0]) :
+def get_pdf_content(pdf_path, page_nums=[0]):
     """
     Récupère le texte sans mise en page contenu dans le fichier PDF pdf_path
     Gère les accent
@@ -26,19 +27,21 @@ def get_pdf_content(pdf_path, page_nums=[0]) :
     content = ''
     p = file(pdf_path, "rb")
     pdf = PyPDF2.PdfFileReader(p)
-    for page_num in page_nums :
+    for page_num in page_nums:
         content += pdf.getPage(page_num).extractText()
     return content
+
 
 # VERSION 3
 # pdfminer version (command line)
 import subprocess as sub
+
 """
 Lit un fichier PDF et en retourne son texte horizontal par défaut
 Options :
 -V retourne aussi le texte vertical
 """
-#sub.Popen(['pdf2txt.py', '-V', PDF_FILE])
+# sub.Popen(['pdf2txt.py', '-V', PDF_FILE])
 
 # VERSION 4
 # pdfminer version
@@ -48,7 +51,8 @@ from pdfminer.converter import XMLConverter, HTMLConverter, TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
-def convert(fname, dest_path, type_out="html",stdout=False, pages=None) :
+
+def convert(fname, dest_path, type_out="html", stdout=False, pages=None):
     """
     Enregistre le contenu txt du PDF en un fichier de type outtype dans data/<outtype>
     Types acceptés "txt", "html", "xml"
@@ -58,17 +62,17 @@ def convert(fname, dest_path, type_out="html",stdout=False, pages=None) :
     # on met tout en minuscule (sauf le nom de fichier)
     dest_path = dest_path.lower()
     type_out = type_out.lower()
-    #fname = fname.lower()
-    
+    # fname = fname.lower()
+
     # on vérifie que le fichier pdf d'entrée existe bien
-    tools.verify_path(fname,file_too=True)
-    if not pages :
+    tools.verify_path(fname, file_too=True)
+    if not pages:
         pagenums = set()
-    else :
+    else:
         pagenums = set(pages)
-    basen,_,ext = tools.recup_basedirname_extension(fname)
+    basen, _, ext = tools.recup_basedirname_extension(fname)
     # oon retire le . avant l'extension
-    ext = ext[1 :]
+    ext = ext[1:]
     # input option
     pagenos = set()
     maxpages = 0
@@ -88,51 +92,51 @@ def convert(fname, dest_path, type_out="html",stdout=False, pages=None) :
 
     outtype = type_out
     # on modifie la destination, le nom du dossier étant comme l'extension
-    dest_path = tools.recup_destination(dest_path,outtype)
+    dest_path = tools.recup_destination(dest_path, outtype)
 
     # le fichier de sortie est alors nommé selon le fichier d'entrée avec la nouvelle extension
     # et dans le dossier correspondant à l'extension attendue
-    outfile = '{}{}.{}'.format(dest_path,basen,outtype)
-    if not stdout :
+    outfile = '{}{}.{}'.format(dest_path, basen, outtype)
+    if not stdout:
         output = file(outfile, 'w')
-    else :
+    else:
         output = sys.stdout
-    
+
     manager = PDFResourceManager(caching=caching)
-    if outtype == 'txt' or outtype=="text" :
+    if outtype == 'txt' or outtype == "text":
         converter = TextConverter(manager, output, codec=codec, laparams=laparams,
-                               imagewriter=imagewriter)
-    elif outtype == 'xml' :
+                                  imagewriter=imagewriter)
+    elif outtype == 'xml':
         converter = XMLConverter(manager, output, codec=codec, laparams=laparams,
-                              imagewriter=imagewriter)
-    elif outtype == 'html' :
+                                 imagewriter=imagewriter)
+    elif outtype == 'html':
         converter = HTMLConverter(manager, output, codec=codec, scale=scale,
-                               layoutmode=layoutmode, laparams=laparams,
-                               imagewriter=imagewriter)
+                                  layoutmode=layoutmode, laparams=laparams,
+                                  imagewriter=imagewriter)
     interpreter = PDFPageInterpreter(manager, converter)
 
     infile = file(fname, 'rb')
-    for page in PDFPage.get_pages(infile, pagenums,caching=caching) :
+    for page in PDFPage.get_pages(infile, pagenums, caching=caching):
         interpreter.process_page(page)
     infile.close()
     converter.close()
     output.close
     return 1
 
-def generatorPDFtoTxt (fichier_pdf, dossier_dest, VERSION="html") :
+
+def generatorPDFtoTxt(fichier_pdf, dossier_dest, VERSION="html"):
     # on génère la version demandée
     import threads as th
     import pdf_ocr
 
-    generateur = th.Sous_Traitance(pdf_ocr.convert,[fichier_pdf, dossier_dest, VERSION], start_time=0, fichier_import='pdf_ocr')
+    generateur = th.Sous_Traitance(pdf_ocr.convert, [fichier_pdf, dossier_dest, VERSION], start_time=0,
+                                   fichier_import='pdf_ocr')
 
-
-    if VERSION!="html":
-
+    if VERSION != "html":
         # on génère aussi tout de même la version html
         pdf_ocr.convert(fichier_pdf, dossier_dest, "html", stdout=True)
-        
+
     # on attend le thread
     generateur.join()
 
-    #print pdf_ocr.get_pdf_content(PDF_FILE)
+    # print pdf_ocr.get_pdf_content(PDF_FILE)
