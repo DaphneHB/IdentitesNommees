@@ -1,10 +1,14 @@
 argcomplete==1.4.0
+beautifulsoup4==4.4.1
 chardet==2.3.0
 enum==0.4.6
 et-xmlfile==1.0.1
 jdcal==1.2
+numpy==1.11.1
 openpyxl==2.3.5
 pdfminer==20140328
+pydot==1.1.0
+pyparsing==2.1.5
 pyPdf==1.13
 PyPDF2==1.26.0
 pytesseract==0.1.6

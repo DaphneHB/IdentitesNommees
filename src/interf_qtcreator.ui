@@ -11,16 +11,16 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>NonoCompta</string>
+   <string>NonoFact</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTextBrowser" name="textBrowser">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>160</y>
-      <width>481</width>
-      <height>561</height>
+      <y>110</y>
+      <width>581</width>
+      <height>611</height>
      </rect>
     </property>
     <property name="searchPaths">
@@ -32,14 +32,14 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>60</y>
-      <width>361</width>
+      <x>20</x>
+      <y>50</y>
+      <width>571</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>Open PDF</string>
+     <string>Ouvrir Facture PDF</string>
     </property>
    </widget>
   </widget>
